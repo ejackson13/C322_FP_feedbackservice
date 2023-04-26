@@ -2,7 +2,11 @@ package edu.iu.c322.finalproject.feedbackservice.controller;
 
 import edu.iu.c322.finalproject.feedbackservice.model.Feedback;
 import edu.iu.c322.finalproject.feedbackservice.model.FeedbackSeller;
+import edu.iu.c322.finalproject.feedbackservice.model.Seller;
 import edu.iu.c322.finalproject.feedbackservice.repository.FeedbackRepository;
+import edu.iu.c322.finalproject.feedbackservice.repository.SellerRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -15,8 +19,22 @@ public class FeedbackController {
 
     private FeedbackRepository repository;
 
-    public FeedbackController(FeedbackRepository repository) {
+    private SellerRepository sellerRepository;
+
+    public FeedbackController(FeedbackRepository repository, SellerRepository sellerRepository) {
         this.repository = repository;
+        this.sellerRepository = sellerRepository;
+    }
+
+    @GetMapping("/{id}")
+    public Feedback find(@PathVariable int id) {
+
+        Feedback feedback = new Feedback();
+        FeedbackSeller feedbackSeller = repository.findById(id).get();
+        feedback.setFeedbackSellerId(feedbackSeller.getFeedbackSellerId());
+        feedback.setRating(feedbackSeller.getSumOfSellerScores() / feedbackSeller.getNumOfSellerScores());
+        return feedback;
+
     }
 
     @GetMapping
@@ -42,12 +60,18 @@ public class FeedbackController {
             feedbackSeller.setNumOfSellerScores(1);
             feedbackSeller.setSumOfSellerScores(feedback.getRating());
             repository.save(feedbackSeller);
+            Seller seller = sellerRepository.findById(feedback.getFeedbackSellerId()).get();
+            seller.setFeedbackSeller(feedbackSeller);
+            sellerRepository.save(seller);
         }
         else {
             FeedbackSeller sellerById = repository.findById(feedback.getFeedbackSellerId()).get();
             sellerById.setNumOfSellerScores(sellerById.getNumOfSellerScores() + 1);
             sellerById.setSumOfSellerScores(sellerById.getSumOfSellerScores() + feedback.getRating());
             repository.save(sellerById);
+            Seller seller = sellerRepository.findById(feedback.getFeedbackSellerId()).get();
+            seller.setFeedbackSeller(sellerById);
+            sellerRepository.save(seller);
         }
     }
 
