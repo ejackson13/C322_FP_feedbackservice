@@ -1,8 +1,6 @@
 package edu.iu.c322.finalproject.feedbackservice.controller;
 
-import edu.iu.c322.finalproject.feedbackservice.model.Feedback;
-import edu.iu.c322.finalproject.feedbackservice.model.FeedbackSeller;
-import edu.iu.c322.finalproject.feedbackservice.model.Seller;
+import edu.iu.c322.finalproject.feedbackservice.model.*;
 import edu.iu.c322.finalproject.feedbackservice.repository.FeedbackRepository;
 import edu.iu.c322.finalproject.feedbackservice.repository.SellerRepository;
 import jakarta.persistence.EntityManager;
@@ -54,8 +52,9 @@ public class FeedbackController {
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/create")
     public void create(@RequestBody Feedback feedback) {
-        System.out.println("the id is: " + feedback.getFeedbackSellerId());
-        System.out.println("the rating is: " + feedback.getRating());
+        ConcreteObserver observer = new ConcreteObserver();
+        ConcreteSubject subject = new ConcreteSubject();
+        subject.registerObserver(observer);
         Optional<FeedbackSeller> feedbackById = repository.findById(feedback.getFeedbackSellerId());
         if (feedbackById.isEmpty()) {
             FeedbackSeller feedbackSeller = new FeedbackSeller();
@@ -64,18 +63,24 @@ public class FeedbackController {
             feedbackSeller.setSumOfSellerScores(feedback.getRating());
             System.out.println("feedbackSeller rating is :" + feedbackSeller.getSumOfSellerScores());
             repository.save(feedbackSeller);
+            subject.notifyObservers(sellerRepository, feedbackSeller, feedback);
+            /*
             Seller seller = sellerRepository.findById(feedback.getFeedbackSellerId()).get();
             seller.setFeedbackSeller(feedbackSeller);
             sellerRepository.save(seller);
+            */
         }
         else {
             FeedbackSeller sellerById = repository.findById(feedback.getFeedbackSellerId()).get();
             sellerById.setNumOfSellerScores(sellerById.getNumOfSellerScores() + 1);
             sellerById.setSumOfSellerScores(sellerById.getSumOfSellerScores() + feedback.getRating());
             repository.save(sellerById);
+            /*
             Seller seller = sellerRepository.findById(feedback.getFeedbackSellerId()).get();
             seller.setFeedbackSeller(sellerById);
             sellerRepository.save(seller);
+            */
+            subject.notifyObservers(sellerRepository, sellerById, feedback);
         }
     }
 
