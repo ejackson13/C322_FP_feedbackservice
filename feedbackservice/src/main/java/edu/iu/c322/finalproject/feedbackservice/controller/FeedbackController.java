@@ -26,17 +26,17 @@ public class FeedbackController {
         this.sellerRepository = sellerRepository;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{id}")
     public Feedback find(@PathVariable int id) {
-
         Feedback feedback = new Feedback();
         FeedbackSeller feedbackSeller = repository.findById(id).get();
         feedback.setFeedbackSellerId(feedbackSeller.getFeedbackSellerId());
         feedback.setRating(feedbackSeller.getSumOfSellerScores() / feedbackSeller.getNumOfSellerScores());
         return feedback;
-
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping
     public List<Feedback> getAll() {
         List<Feedback> allFeedback = new ArrayList<>();
@@ -51,14 +51,18 @@ public class FeedbackController {
         return allFeedback;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/create")
     public void create(@RequestBody Feedback feedback) {
+        System.out.println("the id is: " + feedback.getFeedbackSellerId());
+        System.out.println("the rating is: " + feedback.getRating());
         Optional<FeedbackSeller> feedbackById = repository.findById(feedback.getFeedbackSellerId());
         if (feedbackById.isEmpty()) {
             FeedbackSeller feedbackSeller = new FeedbackSeller();
             feedbackSeller.setFeedbackSellerId(feedback.getFeedbackSellerId());
             feedbackSeller.setNumOfSellerScores(1);
             feedbackSeller.setSumOfSellerScores(feedback.getRating());
+            System.out.println("feedbackSeller rating is :" + feedbackSeller.getSumOfSellerScores());
             repository.save(feedbackSeller);
             Seller seller = sellerRepository.findById(feedback.getFeedbackSellerId()).get();
             seller.setFeedbackSeller(feedbackSeller);

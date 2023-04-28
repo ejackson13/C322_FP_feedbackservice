@@ -7,7 +7,7 @@ public class SellerItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int itemId;
+    private int sellerItemId;
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
@@ -22,11 +22,11 @@ public class SellerItem {
     private String description;
 
     public int getItemId() {
-        return itemId;
+        return sellerItemId;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
+    public void setItemId(int sellerItemId) {
+        this.sellerItemId = sellerItemId;
     }
 
     public Seller getSeller() {

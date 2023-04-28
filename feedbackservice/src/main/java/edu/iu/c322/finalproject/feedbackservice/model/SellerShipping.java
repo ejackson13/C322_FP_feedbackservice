@@ -10,20 +10,31 @@ public class SellerShipping {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int shippingId;
+    private int id;
 
     private String street;
 
     private String city;
 
-    private String zipCode;
+    private int postalCode;
 
-    public int getShippingId() {
-        return shippingId;
+    private String state;
+
+
+    public String getState() {
+        return state;
     }
 
-    public void setShippingId(int shippingId) {
-        this.shippingId = shippingId;
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public int getShippingId() {
+        return id;
+    }
+
+    public void setShippingId(int Id) {
+        this.id = Id;
     }
 
     public String getStreet() {
@@ -42,12 +53,12 @@ public class SellerShipping {
         this.city = city;
     }
 
-    public String getZipCode() {
-        return zipCode;
+    public int getZipCode() {
+        return postalCode;
     }
 
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
+    public void setZipCode(int postalCode) {
+        this.postalCode = postalCode;
     }
 
 }

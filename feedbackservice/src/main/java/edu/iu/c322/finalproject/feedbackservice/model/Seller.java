@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class Seller {
+
     @Id
     private int sellerId;
 
