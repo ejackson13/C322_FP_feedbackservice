@@ -24,7 +24,7 @@ public class FeedbackController {
         this.sellerRepository = sellerRepository;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin()
     @GetMapping("/{id}")
     public Feedback find(@PathVariable int id) {
         Feedback feedback = new Feedback();
@@ -34,7 +34,7 @@ public class FeedbackController {
         return feedback;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin()
     @GetMapping
     public List<Feedback> getAll() {
         List<Feedback> allFeedback = new ArrayList<>();
@@ -49,7 +49,7 @@ public class FeedbackController {
         return allFeedback;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin()
     @PostMapping("/create")
     public void create(@RequestBody Feedback feedback) {
         ConcreteObserver observer = new ConcreteObserver();
